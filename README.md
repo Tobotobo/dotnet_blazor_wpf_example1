@@ -1,7 +1,15 @@
 # dotnet_blazor_wpf_example1
 
 ## 概要
-* まだ途中　※エラーになる
+* WPF + Blazor を Linux 環境（リモートを想定）で開発する
+* 極力最小限の構成とする
+
+## 開発イメージ
+* Docker 等に SSH で接続可能な .NET8 開発コンテナを構築する
+* VSCode + Remote-SSH で上記コンテナに接続して開発する
+* 画面は ExampleApp.Web を watch で実行し、ブラウザで確認しながら開発する
+* Windows 環境でないと動かない機能は、別途開発し依存性の注入で対応する
+* 当該箇所を ExampleApp.Web で実行する際はモックを用いる 
 
 ## 環境
 ```
@@ -91,6 +99,7 @@ public partial class MainWindow : Window
 
         var serviceCollection = new ServiceCollection();
         serviceCollection.AddWpfBlazorWebView();
+        serviceCollection.AddBlazorWebViewDeveloperTools(); // F12 で開発者ツールが起動する
         var services = serviceCollection.BuildServiceProvider();
         Resources.Add("services", services);
     }
@@ -100,36 +109,32 @@ public partial class MainWindow : Window
 wwwroot フォルダを作成し、中に以下の index.html を作成
 ```html
 <!DOCTYPE html>
-<html lang="jp">
+<html lang="ja">
 
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
     <base href="/" />
-    <link href="_content/ExampleApp.Web/app.css" rel="stylesheet" />
-    <link rel="stylesheet" href="ExampleApp.WPF.styles.css" />
+    <link rel="stylesheet" href="bootstrap/bootstrap.min.css" />
+    <link rel="stylesheet" href="app.css" />
+    <link rel="stylesheet" href="ExampleApp.Web.styles.css" />
 </head>
 
 <body>
     <div id="app">Loading...</div>
-
-    <div id="blazor-error-ui" data-nosnippet>
-        An unhandled error has occurred.
-        <a href="" class="reload">Reload</a>
-        <a class="dismiss">🗙</a>
-    </div>
     <script src="_framework/blazor.webview.js"></script>
 </body>
 
 </html>
 ``` 
 
-
-
 exe 作成
 ```
 dotnet publish -r win-x64 --self-contained ExampleApp.WPF -o publish/ExampleApp.WPF
 ```
 
-
-
+実行
+```
+dotnet run --project ExampleApp.WPF
+dotnet watch --project ExampleApp.WPF
+```

@@ -24,6 +24,7 @@ public partial class MainWindow : Window
 
         var serviceCollection = new ServiceCollection();
         serviceCollection.AddWpfBlazorWebView();
+        serviceCollection.AddBlazorWebViewDeveloperTools(); // F12 で開発者ツールが起動する
         var services = serviceCollection.BuildServiceProvider();
         Resources.Add("services", services);
     }
